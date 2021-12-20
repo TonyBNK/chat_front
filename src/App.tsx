@@ -1,15 +1,28 @@
-import React, {useState} from 'react';
+import React, {ChangeEvent, useState} from 'react';
 import c from './App.module.css';
+import {io} from "socket.io-client";
+
+const socket = io("https://chat--backend.herokuapp.com/");
 
 function App() {
     const [messages, setMessages] = useState([
         {
             id: "gsdrtarq",
             message: "Hey Beav",
-            user: {id: "jhgfhj", name: "Butthead"}
+            user: {id: "1", name: "Butthead"}
         },
-        {id: "kjhgjk", message: "Sup dude", user: {id: "hjfg", name: "Beavis"}}
+        {id: "kjhgjk", message: "Sup dude", user: {id: "2", name: "Beavis"}}
     ]);
+
+    const [message, setMessage] = useState('');
+
+    const onChangeMessage = (e: ChangeEvent<HTMLTextAreaElement>) => {
+        setMessage(e.currentTarget.value);
+    }
+
+    const onSendButtonClick = () => {
+        setMessages([...messages, {id: 'asdfas', message, user: {id: "2", name: "Beavis"}}])
+    }
 
     return (
         <div className={c.app}>
@@ -27,10 +40,10 @@ function App() {
                 }
             </div>
             <div className={c.panel}>
-                <textarea>
+                <textarea value={message} onChange={onChangeMessage}>
 
                 </textarea>
-                <button>
+                <button onClick={onSendButtonClick}>
                     Send
                 </button>
             </div>
