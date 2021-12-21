@@ -21,7 +21,6 @@ function App() {
     }
 
     const onSendButtonClick = () => {
-        // setMessages([...messages, {id: 'asdfas', message, user: {id: "2", name: "Beavis"}}]);
         socket.emit('client-sent-message', message);
         setMessage('');
     }
