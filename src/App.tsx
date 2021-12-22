@@ -1,4 +1,4 @@
-import React, {ChangeEvent, useState} from 'react';
+import React, {ChangeEvent, useMemo, useState} from 'react';
 import c from './App.module.css';
 import {io} from "socket.io-client";
 
@@ -25,19 +25,22 @@ function App() {
         setMessage('');
     }
 
+    const messagesList = useMemo(() => messages.map(message =>
+        <div key={message.id}>
+            <span>
+                <b>{message.user.name}: </b>
+            </span>
+            <span>
+                {message.message}
+            </span>
+        </div>
+    ), []);
+
     return (
         <div className={c.app}>
             <div className={c.screen}>
                 {
-                    messages.map(message =>
-                        <div key={message.id}>
-                            <span>
-                                <b>{message.user.name}: </b>
-                            </span>
-                            <span>
-                                {message.message}
-                            </span>
-                        </div>)
+                    messagesList
                 }
             </div>
             <div className={c.panel}>
