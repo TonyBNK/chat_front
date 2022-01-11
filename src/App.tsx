@@ -1,4 +1,4 @@
-import React, {ChangeEvent, useMemo, useState} from 'react';
+import React, {ChangeEvent, KeyboardEvent, useMemo, useState} from 'react';
 import c from './App.module.css';
 import {io} from "socket.io-client";
 
@@ -25,6 +25,12 @@ function App() {
         setMessage('');
     }
 
+    const onEnterPress = (e: KeyboardEvent<HTMLTextAreaElement>) => {
+        if (e.key === 'Enter') {
+            onSendButtonClick();
+        }
+    }
+
     const messagesList = useMemo(() => messages.map(message =>
         <div key={message.id}>
             <span>
@@ -44,8 +50,11 @@ function App() {
                 }
             </div>
             <div className={c.panel}>
-                <textarea value={message} onChange={onChangeMessage}>
-
+                <textarea
+                    value={message}
+                    onChange={onChangeMessage}
+                    onKeyPress={onEnterPress}
+                >
                 </textarea>
                 <button onClick={onSendButtonClick}>
                     Send
