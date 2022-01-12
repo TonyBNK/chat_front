@@ -1,18 +1,17 @@
-import React, {ChangeEvent, KeyboardEvent, useMemo, useState} from 'react';
+import React, {
+    ChangeEvent,
+    KeyboardEvent,
+    useCallback,
+    useMemo,
+    useState
+} from 'react';
 import c from './App.module.css';
 import {io} from "socket.io-client";
 
 const socket = io("https://chat--backend.herokuapp.com/");
 
 function App() {
-    const [messages, setMessages] = useState([
-        {
-            id: "gsdrtarq",
-            message: "Hey Beav",
-            user: {id: "1", name: "Butthead"}
-        },
-        {id: "kjhgjk", message: "Sup dude", user: {id: "2", name: "Beavis"}}
-    ]);
+    const [messages, setMessages] = useState<Array<any>>([]);
 
     const [message, setMessage] = useState('');
 
@@ -20,10 +19,10 @@ function App() {
         setMessage(e.currentTarget.value);
     }
 
-    const onSendButtonClick = () => {
+    const onSendButtonClick = useCallback(() => {
         socket.emit('client-sent-message', message);
         setMessage('');
-    }
+    }, []);
 
     const onEnterPress = (e: KeyboardEvent<HTMLTextAreaElement>) => {
         if (e.key === 'Enter') {
