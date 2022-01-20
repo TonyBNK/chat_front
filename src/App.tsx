@@ -1,17 +1,19 @@
 import React, {
     ChangeEvent,
     KeyboardEvent,
-    useCallback,
+    useCallback, useEffect,
     useMemo,
     useState
 } from 'react';
 import c from './App.module.css';
+import {MessageType} from "./types";
 import {io} from "socket.io-client";
 
-const socket = io("https://chat--backend.herokuapp.com/");
+// const socket = io("https://chat--backend.herokuapp.com/");
+const socket = io("http://localhost:3010", {transports: ['websocket']});
 
 function App() {
-    const [messages, setMessages] = useState<Array<any>>([]);
+    const [messages, setMessages] = useState<Array<MessageType>>([]);
 
     const [message, setMessage] = useState('');
 
@@ -19,10 +21,10 @@ function App() {
         setMessage(e.currentTarget.value);
     }
 
-    const onSendButtonClick = useCallback(() => {
+    const onSendButtonClick = () => {
         socket.emit('client-sent-message', message);
         setMessage('');
-    }, []);
+    };
 
     const onEnterPress = useCallback((e: KeyboardEvent<HTMLTextAreaElement>) => {
         if (e.key === 'Enter') {
@@ -30,7 +32,7 @@ function App() {
         }
     }, []);
 
-    const messagesList = useMemo(() => messages.map(message =>
+    const messagesList = () => messages.map(message =>
         <div key={message.id}>
             <span>
                 <b>{message.user.name}: </b>
@@ -39,7 +41,13 @@ function App() {
                 {message.message}
             </span>
         </div>
-    ), []);
+    );
+
+    useEffect(() => {
+        socket.on('init-messages-published', (messages: Array<MessageType>) => {
+            setMessages(messages);
+        })
+    }, []);
 
     return (
         <div className={c.app}>
