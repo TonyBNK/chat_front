@@ -9,16 +9,22 @@ import c from './App.module.css';
 import {MessageType} from "./types";
 import {io} from "socket.io-client";
 
-// const socket = io("https://chat--backend.herokuapp.com/");
-const socket = io("http://localhost:3010", {transports: ['websocket']});
+const socket = io("https://chat--backend.herokuapp.com/");
+
+// const socket = io("http://localhost:3010", {transports: ['websocket', 'htmlfile', 'xhr-polling', 'jsonp-polling', 'polling']});
 
 function App() {
     const [messages, setMessages] = useState<Array<MessageType>>([]);
 
     const [message, setMessage] = useState('');
+    const [name, setName] = useState('');
 
     const onChangeMessage = (e: ChangeEvent<HTMLTextAreaElement>) => {
         setMessage(e.currentTarget.value);
+    }
+
+    const onChangeName = (e: ChangeEvent<HTMLInputElement>) => {
+        setName(e.currentTarget.value);
     }
 
     const onSendButtonClick = () => {
@@ -32,7 +38,7 @@ function App() {
         }
     }, []);
 
-    const messagesList = () => messages.map(message =>
+    const messagesList = useMemo(() => messages.map(message =>
         <div key={message.id}>
             <span>
                 <b>{message.user.name}: </b>
@@ -41,11 +47,14 @@ function App() {
                 {message.message}
             </span>
         </div>
-    );
+    ), [messages]);
 
     useEffect(() => {
         socket.on('init-messages-published', (messages: Array<MessageType>) => {
             setMessages(messages);
+        })
+        socket.on('new-message-received', (message: MessageType) => {
+            setMessages(messages => [...messages, message]);
         })
     }, []);
 
@@ -55,6 +64,12 @@ function App() {
                 {
                     messagesList
                 }
+            </div>
+            <div>
+                <input type="text" value={name} onChange={onChangeName}/>
+                <button onClick={() => socket.emit('client-sent-name', name)}>
+                    send name
+                </button>
             </div>
             <div className={c.panel}>
                 <textarea
