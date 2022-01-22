@@ -9,23 +9,22 @@ import c from './App.module.css';
 import {MessageType} from "./types";
 import {io} from "socket.io-client";
 
-const socket = io("https://chat--backend.herokuapp.com/");
 
-// const socket = io("http://localhost:3010", {transports: ['websocket', 'htmlfile', 'xhr-polling', 'jsonp-polling', 'polling']});
+const socket = io("https://chat--backend.herokuapp.com/");
 
 function App() {
     const [messages, setMessages] = useState<Array<MessageType>>([]);
 
-    const [message, setMessage] = useState('');
-    const [name, setName] = useState('');
+    const [message, setMessage] = useState<string>('');
+    const [name, setName] = useState<string>('');
 
-    const onChangeMessage = (e: ChangeEvent<HTMLTextAreaElement>) => {
+    const onChangeMessage = useCallback((e: ChangeEvent<HTMLTextAreaElement>) => {
         setMessage(e.currentTarget.value);
-    }
+    }, []);
 
-    const onChangeName = (e: ChangeEvent<HTMLInputElement>) => {
+    const onChangeName = useCallback((e: ChangeEvent<HTMLInputElement>) => {
         setName(e.currentTarget.value);
-    }
+    }, []);
 
     const onSendButtonClick = () => {
         socket.emit('client-sent-message', message);
