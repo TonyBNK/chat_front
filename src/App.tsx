@@ -2,7 +2,7 @@ import React, {
     ChangeEvent,
     KeyboardEvent,
     useCallback, useEffect,
-    useMemo,
+    useMemo, useRef,
     useState
 } from 'react';
 import c from './App.module.css';
@@ -57,12 +57,21 @@ function App() {
         })
     }, []);
 
+    useEffect(() => {
+        messagesAnchorRef.current?.scrollIntoView({behavior: 'smooth'});
+    }, [messages]);
+
+    const messagesAnchorRef = useRef<HTMLDivElement>(null);
+
     return (
         <div className={c.app}>
             <div className={c.screen}>
                 {
                     messagesList
                 }
+                <div ref={messagesAnchorRef}>
+
+                </div>
             </div>
             <div>
                 <input type="text" value={name} onChange={onChangeName}/>
