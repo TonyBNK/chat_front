@@ -31,12 +31,6 @@ function App() {
         setMessage('');
     };
 
-    const onEnterPress = useCallback((e: KeyboardEvent<HTMLTextAreaElement>) => {
-        if (e.key === 'Enter') {
-            onSendButtonClick();
-        }
-    }, []);
-
     const messagesList = useMemo(() => messages.map(message =>
         <div key={message.id}>
             <span>
@@ -83,7 +77,6 @@ function App() {
                 <textarea
                     value={message}
                     onChange={onChangeMessage}
-                    onKeyPress={onEnterPress}
                 >
                 </textarea>
                 <button onClick={onSendButtonClick}>
