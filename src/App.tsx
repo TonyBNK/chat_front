@@ -42,6 +42,10 @@ function App() {
         </div>
     ), [messages]);
 
+    const onSendNameClick = () => {
+        socket.emit('client-sent-name', name);
+    }
+
     useEffect(() => {
         socket.on('init-messages-published', (messages: Array<MessageType>) => {
             setMessages(messages);
@@ -69,7 +73,7 @@ function App() {
             </div>
             <div>
                 <input type="text" value={name} onChange={onChangeName}/>
-                <button onClick={() => socket.emit('client-sent-name', name)}>
+                <button onClick={onSendNameClick}>
                     send name
                 </button>
             </div>
