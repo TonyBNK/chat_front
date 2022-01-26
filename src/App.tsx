@@ -42,9 +42,9 @@ function App() {
         </div>
     ), [messages]);
 
-    const onSendNameClick = () => {
+    const onSendNameClick = useCallback(() => {
         socket.emit('client-sent-name', name);
-    }
+    }, []);
 
     useEffect(() => {
         socket.on('init-messages-published', (messages: Array<MessageType>) => {
